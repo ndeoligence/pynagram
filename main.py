@@ -1,7 +1,6 @@
 #!/home/monde/anaconda3/envs/py36/bin/python
 import sys
-from my_text_utils import permute
-from itertools import combinations
+from itertools import combinations, permutations
 import argparse
 
 
@@ -17,14 +16,15 @@ def get_args():
     return parser.parse_args()
 
 
-def load_dict(filename, min=None, max=None):
-    if min is None:
-        min = 1
+def load_dict(filename, mn=None, mx=None):
+    if mn is None:
+        mn = 1
     words = []
     with open(filename) as f:
         words += f.read().split('\n')
-    # print(f'Word list size = {len(wordlist)}')
-    return [s for s in words if (len(s)>=min and (not max or len(s) <= max))]
+    wordlist = [s for s in words if (len(s)>=mn and (not mx or len(s) <= mx))]
+    print(f'Word list size = {len(wordlist)}')
+    return wordlist
 
 
 def find_valid_words(wordlist, candidates):
@@ -32,15 +32,10 @@ def find_valid_words(wordlist, candidates):
     return dictionary & perms
 
 
-def to_sorted_strings(rows):
-    """Transforms a list of lists of chars
-    into a list of words. So the inner lists of chars get transformed to strings.
-    """
-    return sorted([''.join(r) for r in rows])
-
-
-def get_anagrams(s, dictionary=None):
-    strings = to_sorted_strings(permute(list(s)))
+def get_anagrams(s, dictionary, mn, mx):
+    strings = []
+    for i in range(mn, mx+1):
+        strings += [''.join(e) for e in permutations(s, i)]
     if dictionary is None:
         return strings
     return find_valid_words(dictionary, strings)
@@ -50,11 +45,11 @@ def main():
     args = get_args()
     min_len = 1 if not args.min else args.min
     max_len = args.max
+    if not max_len or max_len > len(args.anagram):
+        max_len = len(args.anagram)
     dictionary = load_dict(args.dict, min_len, max_len) if args.dict else None
-    if not max_len:
-        max_len = max(dictionary, key=len)
 
-    for s in get_anagrams(args.anagram, dictionary):
+    for s in sorted(get_anagrams(args.anagram, dictionary, min_len, max_len), key=lambda s: (len(s), s)):
         print(s)
 
 

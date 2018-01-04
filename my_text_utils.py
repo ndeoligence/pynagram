@@ -1,4 +1,5 @@
 def permute(elements, n=None):
+    elements = list(elements)
     if n is None:
         n = len(elements)
 
