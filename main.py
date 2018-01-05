@@ -1,4 +1,4 @@
-#!/home/monde/anaconda3/envs/py36/bin/python
+#!/usr/bin/python3
 import sys
 from itertools import combinations, permutations
 import argparse
