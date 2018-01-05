@@ -23,7 +23,7 @@ def load_dict(filename, mn=None, mx=None):
     with open(filename) as f:
         words += f.read().split('\n')
     wordlist = [s for s in words if (len(s)>=mn and (not mx or len(s) <= mx))]
-    print(f'Word list size = {len(wordlist)}')
+    # print(f'[debug] <load_dict> Word list size = {len(wordlist)}')
     return wordlist
 
 
@@ -49,7 +49,11 @@ def main():
         max_len = len(args.anagram)
     dictionary = load_dict(args.dict, min_len, max_len) if args.dict else None
 
+    # size = 0
     for s in sorted(get_anagrams(args.anagram, dictionary, min_len, max_len), key=lambda s: (len(s), s)):
+        # if size != len(s):
+            # size = len(s)
+            # print(f'[debug] <main>* * {size} * *')
         print(s)
 
 
