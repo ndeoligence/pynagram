@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-import sys
+#!/usr/bin/env python
 from itertools import combinations, permutations
 import argparse
 
