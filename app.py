@@ -32,9 +32,9 @@ def find_valid_words(wordlist, candidates):
 
 
 def get_anagrams(s, dictionary, mn, mx):
-    strings = []
+    strings = set()
     for i in range(mn, mx+1):
-        strings += [''.join(e) for e in permutations(s, i)]
+        strings |= {''.join(e) for e in permutations(s, i)}
     if dictionary is None:
         return strings
     return find_valid_words(dictionary, strings)
@@ -48,11 +48,8 @@ def main():
         max_len = len(args.anagram)
     dictionary = load_dict(args.dict, min_len, max_len) if args.dict else None
 
-    # size = 0
-    for s in sorted(get_anagrams(args.anagram, dictionary, min_len, max_len), key=lambda s: (len(s), s)):
-        # if size != len(s):
-            # size = len(s)
-            # print(f'[debug] <main>* * {size} * *')
+    anagrams = sorted(get_anagrams(args.anagram, dictionary, min_len, max_len), key=lambda s: (len(s), s))
+    for s in anagrams:
         print(s)
 
 
