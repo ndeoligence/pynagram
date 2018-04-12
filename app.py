@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from itertools import combinations, permutations
 import argparse
+from utils import *
 
 
 def get_args():
@@ -13,31 +14,6 @@ def get_args():
     parser.add_argument('-d', '--dict', help='dictionary file name', type=str) # a positional argument.
     # parser.add_argument('-o', '--outfile', help='print output to this file instead of stdout', type=str) # an optional argument
     return parser.parse_args()
-
-
-def load_dict(filename, mn=None, mx=None):
-    if mn is None:
-        mn = 1
-    words = []
-    with open(filename) as f:
-        words += f.read().split('\n')
-    wordlist = [s for s in words if (len(s)>=mn and (not mx or len(s) <= mx))]
-    # print(f'[debug] <load_dict> Word list size = {len(wordlist)}')
-    return wordlist
-
-
-def find_valid_words(wordlist, candidates):
-    dictionary, perms = set(wordlist), set(candidates)
-    return dictionary & perms
-
-
-def get_anagrams(s, dictionary, mn, mx):
-    strings = set()
-    for i in range(mn, mx+1):
-        strings |= {''.join(e) for e in permutations(s, i)}
-    if dictionary is None:
-        return strings
-    return find_valid_words(dictionary, strings)
 
 
 def main():

@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block title %}Anagrams | {{ super() }}{% endblock %}
+
+{% block content %}
+	{% if words %}
+		<h2>Anagrams of <span>{{string}}</span>:</h2>
+		<ol>
+		{% for word in words %}
+			<li><a href="https://google.com/search?q=define+{{word}}">{{ word }}</a></li>
+		{% endfor %}
+		</ol>
+	{% else %}
+			<h2>No words returned.</h2>
+	{% endif %}
+{% endblock %}
