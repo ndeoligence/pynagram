@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import unittest
-import re
 import os
-from app import load_dict, get_anagrams
+import re
+import unittest
+from utils import load_dict, get_anagrams
 
 
 class AppTest(unittest.TestCase):

@@ -1,7 +1,10 @@
 #!/usr/bin/env python
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import logging as log
 from utils import *
+import json
+
+MAX_INPUT_LEN = 10
 
 log.basicConfig(level=log.DEBUG)
 
@@ -28,4 +31,19 @@ def anagram():
     return render_template('anagram.html', **{'words':anagrams, 'string': string})
 
 
-app.run(host='localhost', port=8000, debug=True)
+@app.route(r'/api/<instr>')
+def api(instr):
+    log.info(f"input = [{instr}]")
+    instr_len = len(instr)
+    if (instr_len > MAX_INPUT_LEN):
+        return Response(json.dumps({'string': instr, 'anagrams': [],
+            'error': f'Input string too long. Max length allowed = {MAX_INPUT_LEN}'}),
+            status=200, mimetype='application/json')
+    anagrams = sorted(get_anagrams(instr, dictionary, 1, instr_len), key=lambda w: (len(w), w))
+    log.debug(f"Anagram [{instr}] has {len(anagrams)} anagrams")
+    response = Response(json.dumps({'string': instr, 'anagrams': anagrams}), status=200, mimetype='application/json')
+    return response
+
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=8000, debug=True)
