@@ -11,10 +11,8 @@ class AppTest(unittest.TestCase):
         self.words = [
             'matthew', 'mark', 'luke', 'john', 'timothy', 'titus', 'philemon', 'james', 'peter', 'jude'
         ]
-        f = open(self.filename, 'w')
-        for s in self.words:
-            f.write(f'{s}\n')
-        f.close()
+        with open(self.filename, 'w') as f:
+            f.write('\n'.join(self.words))
         with open(self.filename, 'r') as f:
             self.assertSetEqual({s for s in re.split(r'\n', f.read()) if len(s) > 0}, set(self.words))
 
@@ -32,6 +30,17 @@ class AppTest(unittest.TestCase):
 
     def test_get_anagrams(self):
         self.assertIn('matthew', get_anagrams('wehtamt', self.words, 6, 7))
+
+    def test_get_anagrams_empty(self):
+        self.assertSetEqual(set(), get_anagrams(None, self.words, 6, 7))
+        self.assertSetEqual(set(), get_anagrams('', self.words, 6, 7))
+
+    def test_get_anagrams_no_dict(self):
+        self.assertSetEqual({
+            'a', 'b', 'c',
+            'ab', 'ac', 'ba', 'bc', 'ca', 'cb',
+            'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
+        }, get_anagrams('abc', None, 1, 3))
 
     def tearDown(self):
         os.remove(self.filename)
