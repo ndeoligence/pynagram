@@ -2,7 +2,7 @@
 import os
 import re
 import unittest
-from utils import load_dict, get_anagrams
+from app import load_dict
 
 
 class AppTest(unittest.TestCase):
@@ -27,20 +27,6 @@ class AppTest(unittest.TestCase):
 
     def test_dict_min_max(self):
         self.assertListEqual([w for w in self.words if (5 <= len(w) <= 6)], load_dict(self.filename, 5, 6))
-
-    def test_get_anagrams(self):
-        self.assertIn('matthew', get_anagrams('wehtamt', self.words, 6, 7))
-
-    def test_get_anagrams_empty(self):
-        self.assertSetEqual(set(), get_anagrams(None, self.words, 6, 7))
-        self.assertSetEqual(set(), get_anagrams('', self.words, 6, 7))
-
-    def test_get_anagrams_no_dict(self):
-        self.assertSetEqual({
-            'a', 'b', 'c',
-            'ab', 'ac', 'ba', 'bc', 'ca', 'cb',
-            'abc', 'acb', 'bac', 'bca', 'cab', 'cba'
-        }, get_anagrams('abc', None, 1, 3))
 
     def tearDown(self):
         os.remove(self.filename)
