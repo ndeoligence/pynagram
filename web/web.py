@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, request, Response
 import logging as log
-from utils import *
 import json
 
 MAX_INPUT_LEN = 10

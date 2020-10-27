@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-from utils import get_anagrams
+from pynagram.pynagram import get_anagrams
 
 
 def sort_list(items):
@@ -12,7 +12,8 @@ class AppTest(unittest.TestCase):
     def setUp(self):
         self.filename = 'dict.dat'
         self.words = [
-            'matthew', 'mark', 'luke', 'john', 'timothy', 'titus', 'philemon', 'james', 'peter', 'jude'
+            'matthew', 'mark', 'luke', 'john', 'timothy', 'titus',
+            'philemon', 'james', 'peter', 'jude'
         ]
 
     def test_get_anagrams(self):
