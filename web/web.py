@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, Response
 import logging as log
 import json
+from pynagram.pynagram import (get_anagrams, load_dict)
 
 MAX_INPUT_LEN = 10
 

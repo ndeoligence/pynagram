@@ -34,7 +34,7 @@ setup(
     description="An anagram utility",
     entry_points={
         'console_scripts': [
-            'pynagram=pynagram.cli:main',
+            'pynagram=pynagram.cli:cli',
         ],
     },
     install_requires=requirements,

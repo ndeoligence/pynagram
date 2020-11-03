@@ -1,7 +1,9 @@
 from itertools import permutations
 from functools import reduce, partial
 import re
-from typing import Collection
+from typing import Collection, Tuple
+
+from pynagram.util import timed, WordList, log
 
 
 def find_valid_words(dictionary: Collection[str], candidates: Collection[str]) -> Collection[str]:
@@ -12,6 +14,39 @@ def find_valid_words(dictionary: Collection[str], candidates: Collection[str]) -
     """
     dictionary, perms = set(dictionary), set(candidates)
     return dictionary & perms
+
+
+def _remove_chars(string, chars):
+    for k in chars:
+        string = string.replace(k, '', 1)
+    return string
+
+
+# @log
+def _const_sentences(string: str, words_list: Collection[str]) -> Tuple[bool, Collection[str]]:
+    if not string:
+        return True, []
+    words = sorted(get_anagrams(string, words_list, 1, len(string)), key=lambda s: (len(s), s))
+    # click.secho(f"words = {words}", fg='green')
+    if len(words) == 0:
+        return False, []
+
+    acc = []
+    for w in words:
+        flag, tails = _const_sentences(_remove_chars(string, w), words_list)
+        if flag:
+            acc += [f"{w} {tail}" for tail in tails] if tails else [w]
+
+    return len(acc) > 0, acc
+
+
+# @log
+# @timed
+def construct_sentences(string: str, words_list: Collection[str]) -> Collection[str]:
+    if not words_list:
+        raise ValueError('Word list required for creating sentences')
+    _, sentences = _const_sentences(string, words_list)
+    return sentences
 
 
 def get_anagrams(string: str, dictionary: Collection[str], mn: int, mx: int) -> Collection[str]:
@@ -58,4 +93,4 @@ def load_dict(filename, mn=None, mx=None):
     words_list = [s for s in words if (not mx and mn <= len(s)
                                        or mn <= len(s) <= mx)]
     # click.echo(f'[debug] <load_dict> Word list size = {len(words_list)}')
-    return words_list
+    return WordList(words_list)
