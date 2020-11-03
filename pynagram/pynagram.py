@@ -3,7 +3,9 @@ from functools import reduce, partial
 import re
 from typing import Collection, Tuple
 
-from pynagram.util import timed, WordList, log
+from pynagram.util import WordList, log
+
+_word_list = None
 
 
 def find_valid_words(dictionary: Collection[str], candidates: Collection[str]) -> Collection[str]:
@@ -78,6 +80,7 @@ def get_anagrams(string: str, dictionary: Collection[str], mn: int, mx: int) -> 
     return find_valid_words(dictionary, strings)
 
 
+# @log
 def load_dict(filename, mn=None, mx=None):
     """
     Loads words from a dictionary (word list)
@@ -85,12 +88,19 @@ def load_dict(filename, mn=None, mx=None):
     mn: minimum length of words to be imported
     mx: the maximum length of imported words
     """
-    if mn is None:
-        mn = 1
-    words = []
-    with open(filename) as f:
-        words += f.read().split('\n')
-    words_list = [s for s in words if (not mx and mn <= len(s)
-                                       or mn <= len(s) <= mx)]
-    # click.echo(f'[debug] <load_dict> Word list size = {len(words_list)}')
-    return WordList(words_list)
+    global _word_list
+    if not _word_list:
+        if mn is None:
+            mn = 1
+        words = []
+        with open(filename) as f:
+            words += f.read().split('\n')
+        words_list = [s for s in words if (not mx and mn <= len(s)
+                                           or mn <= len(s) <= mx)]
+        # click.echo(f'[debug] <load_dict> Word list size = {len(words_list)}')
+        _word_list = WordList(words_list)
+    return _word_list
+
+
+def is_word(string: str, words: Collection[str]) -> bool:
+    return string in words

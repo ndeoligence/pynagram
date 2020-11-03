@@ -3,7 +3,9 @@ import sys
 import click
 
 from pynagram.pynagram import *
+from pynagram import numpad_kb
 # from pynagram.util import write
+from pynagram.util import minimax
 
 
 @click.group()
@@ -43,14 +45,7 @@ def sentence(min_len, max_len, word_list, sep, anagram):
 def words(min_len, max_len, word_list, anagram):
     """Creates words that are anagrams of the given input"""
     # click.echo(f"main({min_len}, {max_len}, {word_list}, {anagram})")
-    if not max_len:
-        max_len = len(anagram)
-    if not min_len:
-        min_len = 1
-    elif min_len < 0:
-        min_len = max_len
-    else:
-        min_len = min(min_len, max_len)
+    min_len, max_len = minimax(min_len, max_len, len(anagram))
 
     # click.echo(f"main({min_len}, {max_len}, {word_list}, {anagram})")
 
@@ -60,6 +55,28 @@ def words(min_len, max_len, word_list, anagram):
     for s in anagrams:
         click.echo(s)
     return 0
+
+
+@cli.command()
+@click.option('-m', '--min-len', type=int, default=None,
+              help='minimum word length')
+@click.option('-x', '--max-len', type=int, default=None,
+              help='maximum word length')
+@click.option('-d', '--word-list', type=click.Path(exists=True), default=None,
+              help='dictionary file')
+@click.option('-p', '--pred', is_flag=True, default=False,
+              help='enable predictive text')
+@click.option('-s', '--sep', default='\n',
+              help='Sentence separator')
+@click.argument('seq')
+def numpad(pred, word_list, min_len, max_len, sep, seq):
+    if pred and len(seq) > 10:
+        click.echo("Input sequence is too long")
+        return 1
+    min_len, max_len = minimax(min_len, max_len, len(seq))
+    dictionary = load_dict(word_list, min_len, max_len) if word_list else None
+    ws = numpad_kb.proc(seq, pred, dictionary)
+    click.echo(sep.join(ws))
 
 
 if __name__ == "__main__":

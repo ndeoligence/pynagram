@@ -12,7 +12,7 @@ def is_iter(obj):
 
 
 def stringify(*args, **kwargs):
-    mystr = lambda o: f"(len={len(o)}){str(o[:10])}" if isinstance(o, list) else str(o)
+    mystr = lambda o: f"(len={len(o)}){str(o[:10] + (['...'] if len(o) > 10 else []))}" if isinstance(o, list) else str(o)
     xs = [mystr(e) for e in args] + [f"{k}={v}" for k, v in kwargs.items()]
     return ', '.join(xs)
 
@@ -76,6 +76,18 @@ def swap(xs: List, i: int, j: int) -> None:
 def write(path, contents):
     with open(path, 'w') as f:
         f.write(contents)
+
+
+def minimax(min_len, max_len, upper_bound):
+    if not max_len:
+        max_len = upper_bound
+    if not min_len:
+        min_len = 1
+    elif min_len < 0:
+        min_len = max_len
+    else:
+        min_len = min(min_len, max_len)
+    return min_len, max_len
 
 
 class WordList(list):
